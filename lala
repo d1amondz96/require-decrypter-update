@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>d9_6's Require Decrypter</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: popIn 1s ease forwards;
+  width: 320px;
+  position: relative;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input::placeholder {
+      color: #bbbbbb;
+      opacity: 1;
+    }
+
+    input[type="text"]:focus {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    input[readonly] {
+      background: rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      user-select: all;
+      color: #aaaaaa;
+    }
+
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #6a11cb;
+      background: linear-gradient(to right, #2575fc, #6a11cb);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .copied {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00ff95;
+      color: #1f1c2c;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      animation: fadeInOut 2s forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(0px);
+      }
+      20% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px);
+      }
+      80% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(0px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>d9_6's Require Decrypter</h1>
+  <input type="text" id="hexInput" placeholder="Enter Obfuscated Require (e.g. 0xABC123)">
+  <input type="text" id="decimalOutput" placeholder="Output" readonly onclick="copyOutput()">
+  <button onclick="decryptHex()">Decrypt</button>
+  <div id="copiedMessage" class="copied" style="display:none;">Copied!</div>
+</div>
+
+<script>
+function decryptHex() {
+  let input = document.getElementById('hexInput').value.trim();
+  let hexString = input.startsWith('0x') ? input.slice(2) : input;
+  let output = document.getElementById('decimalOutput');
+
+  if (!hexString.match(/^[0-9a-fA-F]+$/)) {
+    output.value = "Invalid Hex!";
+    output.style.color = "red";
+    return;
+  }
+
+  if (/^[0-9]+$/.test(hexString)) {
+    output.value = "Invalid Hex!";
+    output.style.color = "red";
+    return;
+  }
+
+  try {
+    let decimalValue = parseInt(hexString, 16);
+    if (isNaN(decimalValue)) {
+      output.value = "Invalid Hex!";
+      output.style.color = "red";
+    } else {
+      output.value = decimalValue;
+      output.style.color = "limegreen";
+    }
+  } catch (error) {
+    output.value = "Error!";
+    output.style.color = "red";
+  }
+}
+
+
+  function copyOutput() {
+    const output = document.getElementById('decimalOutput');
+    const text = output.value;
+
+    if (text && text !== "Invalid Hex!" && text !== "Error!") {
+      navigator.clipboard.writeText(text).then(() => {
+        showCopiedMessage();
+      });
+    }
+  }
+
+  function showCopiedMessage() {
+    const message = document.getElementById('copiedMessage');
+    message.style.display = 'block';
+    message.classList.remove('copied');
+    void message.offsetWidth;
+    message.classList.add('copied');
+
+    setTimeout(() => {
+      message.style.display = 'none';
+    }, 2000);
+  }
+</script>
+
+</body>
+</html>
